@@ -62,7 +62,7 @@ def register():
         else:
             flash(error)
 
-    return render_template("auth/register.html")
+    return render_template("auth/register.jinja")
 
 
 @blueprint.route("/login", methods=("GET", "POST"))
@@ -85,7 +85,7 @@ def login():
 
         flash(error)
 
-    return render_template("auth/login.html")
+    return render_template("auth/login.jinja")
 
 
 @blueprint.route("/logout")
