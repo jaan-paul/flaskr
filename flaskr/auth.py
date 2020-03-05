@@ -10,7 +10,7 @@ from flask import (
     session,
     url_for,
 )
-from workzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from .db import get_db
 
 

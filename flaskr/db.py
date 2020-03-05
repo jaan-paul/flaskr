@@ -3,59 +3,7 @@ import sqlite3
 import click
 from flask import Flask, current_app, g
 from flask.cli import with_appcontext
-from workzeug.security import generate_password_hash, check_password_hash
-
-
-def init_app(app: Flask) -> None:
-    app.cli.add_command(_init_db_command)
-    app.teardown_appcontext(_close_db)
-
-
-@click.command("init-db")
-@with_appcontext
-def _init_db_command() -> None:
-    """Clear the existing data and create new tables."""
-    db = get_db()
-    with current_app.open_resource("schema.sql") as f:
-        db.connection.executescript(f.read().decode("utf8"))
-
-    click.echo(f"Database {current_app.config['DATABASE']} initialized.")
-
-
-def _close_db(_) -> None:
-    db = g.pop("db", None)
-    if db is not None:
-        db.close()
-
-
-def get_db() -> _Database:
-    if "db" not in g:
-        g.db = _Database()
-
-    return g.db
-
-
-class _Database:
-    _connection: sqlite3.Connection
-    users: _Users
-    posts: _Posts
-
-    def __init__(self):
-        connection = sqlite3.connect(
-            current_app.config["DATABASE"], detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        connection.row_factory = sqlite3.Row
-
-        self._connection = connection
-        self.users = _Users(connection)
-        self.posts = _Posts(connection)
-
-    @property
-    def connection(self) -> sqlite3.Connection:
-        return self._connection
-
-    def close(self) -> None:
-        self._connection.close()
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class _Users:
