@@ -53,11 +53,11 @@ def register():
             error = "Username is required."
         elif not password:
             error = "Password is required."
-        elif db.select_by_username(username) is not None:
+        elif db.users.select_by_username(username) is not None:
             error = f"User {username} is already registered."
 
         if error is None:
-            db.insert(username, password)
+            db.users.insert(username, password)
             return redirect(url_for("auth.login"))
         else:
             flash(error)
@@ -71,7 +71,7 @@ def login():
         username, password = request.form["username"], request.form["password"]
         db = get_db()
         error = None
-        user = db.select_by_username(username)
+        user = db.users.select_by_username(username)
 
         if user is None:
             error = "Incorrect username."
