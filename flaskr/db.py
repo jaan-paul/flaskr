@@ -52,7 +52,7 @@ class _Users:
     def insert(self, username: str, password: str) -> None:
         pw_hash = generate_password_hash(password)
         self._connection.execute(
-            "INSERT INTO Users (Username, Password) VALUES (?, ?)",
+            "INSERT INTO Users (Username, PasswordHash) VALUES (?, ?)",
             (username, pw_hash),
         )
         self._connection.commit()
