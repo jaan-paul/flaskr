@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from . import db
 from . import auth
+from . import blog
 
 
 def create_app(test_config=None) -> Flask:
@@ -25,13 +26,15 @@ def create_app(test_config=None) -> Flask:
     except OSError:
         pass
 
-    @app.route("/")
-    def home() -> str:
-        return "Henlo world!"
-
     db.init_app(app)
 
     app.register_blueprint(auth.blueprint)
+
+    app.register_blueprint(blog.blueprint)
+    # Associate 'index' route to '/'. So whenever url_for is given 'index', it
+    # refers to 'blog.index', which blog.blueprint, we've given a root relative
+    # to '/'.
+    app.add_url_rule("/", endpoint="index")
 
     return app
 
