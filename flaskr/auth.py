@@ -74,7 +74,7 @@ def login():
         user = db.users.select_by_username(username)
 
         if user is None:
-            error = "Incorrect username."
+            error = "Unknown username."
         elif not check_password_hash(user["PasswordHash"], password):
             error = "Incorrect password."
 
