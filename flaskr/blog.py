@@ -87,11 +87,12 @@ def delete(post_id: int):
     return redirect(url_for("blog.index"))
 
 
-# Get post from the database with post_id. Uses abort(404) to signal
-# non-existent post or in the case of check_author being True, abort(403).
-#
-# abort throws an exception with the given HTTP status code.
 def _get_post(post_id: int, check_author: bool = True):
+    """ Get post from the database with post_id. Uses werkzeug.abort(404) to 
+        signal a non-existent post or in the case of check_author being True, 
+        abort(403).
+    """
+
     post = (
         get_db()
         .connection.execute(
