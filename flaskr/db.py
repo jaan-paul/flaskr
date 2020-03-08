@@ -97,11 +97,14 @@ def init_app(app: Flask) -> None:
 @with_appcontext
 def _init_db_command() -> None:
     """Clear the existing data and create new tables."""
-    db = get_db()
-    with current_app.open_resource("schema.sql") as f:
-        db.connection.executescript(f.read().decode("utf8"))
-
+    init_db()
     click.echo(f"Database {current_app.config['DATABASE']} initialized.")
+
+
+def init_db() -> None:
+    connection = get_db().connection
+    with current_app.open_resource("schema.sql") as f:
+        connection.executescript(f.read().decode("utf8"))
 
 
 def _close_db(_) -> None:
