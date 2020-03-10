@@ -21,6 +21,7 @@ def create_app(test_config=None) -> Flask:
     else:
         app.config.from_mapping(test_config)
 
+    # Ensure instance path is created.
     try:
         os.makedirs(app.instance_path)
     except OSError:
