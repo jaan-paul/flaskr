@@ -64,6 +64,30 @@ class _Posts:
     def __init__(self, connection: sqlite3.Connection):
         self._connection = connection
 
+    def insert(self, title: str, body: str, author_id: int) -> None:
+        if not title:
+            raise ValueError("Empty title.")
+
+        self._connection.execute(
+            "INSERT INTO Posts (Title, Body, AuthorId) VALUES (?, ?, ?)",
+            (title, body, author_id),
+        )
+        self._connection.commit()
+
+    def update_content(self, post_id: int, title: str, body: str) -> None:
+        if not title:
+            raise ValueError("Empty title.")
+
+        self._connection.execute(
+            "UPDATE Posts SET Title = ?, Body = ? WHERE Id = ?",
+            (title, body, post_id),
+        )
+        self._connection.commit()
+
+    def delete(self, post_id: int) -> None:
+        self._connection.execute("DELETE FROM Posts WHERE Id = ?", (post_id,))
+        self._connection.commit()
+
 
 class _Database:
     _connection: sqlite3.Connection

@@ -39,13 +39,7 @@ def create():
         if error is not None:
             flash(error)
         else:
-            connection = get_db().connection
-            connection.execute(
-                "INSERT INTO Posts (Title, Body, AuthorId)"
-                "   VALUES(?, ?, ?)",
-                (title, body, g.user["Id"]),
-            )
-            connection.commit()
+            get_db().posts.insert(title, body, g.user["Id"])
 
             return redirect(url_for("blog.index"))
 
@@ -64,12 +58,7 @@ def update(post_id: int):
         if error is not None:
             flash(error)
         else:
-            connection = get_db().connection
-            connection.execute(
-                "UPDATE Posts SET Title = ?, Body = ? WHERE Id = ?",
-                (title, body, post_id),
-            )
-            connection.commit()
+            get_db().posts.update_content(post_id, title, body)
 
             return redirect(url_for("blog.index"))
 
@@ -80,10 +69,7 @@ def update(post_id: int):
 @login_required
 def delete(post_id: int):
     _get_post(post_id)
-
-    connection = get_db().connection
-    connection.execute("DELETE FROM Posts WHERE Id = ?", (post_id,))
-    connection.commit()
+    get_db().posts.delete(post_id)
 
     return redirect(url_for("blog.index"))
 
