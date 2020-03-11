@@ -8,6 +8,7 @@ from flask import (
     url_for,
 )
 from werkzeug.exceptions import abort
+from http import HTTPStatus
 from .auth import login_required
 from .db import get_db
 
@@ -88,11 +89,6 @@ def delete(post_id: int):
 
 
 def _get_post(post_id: int, check_author: bool = True):
-    """ Get post from the database with post_id. Uses werkzeug.abort(404) to 
-        signal a non-existent post or in the case of check_author being True, 
-        abort(403).
-    """
-
     post = (
         get_db()
         .connection.execute(
@@ -105,12 +101,10 @@ def _get_post(post_id: int, check_author: bool = True):
     )
 
     if post is None:
-        # 404: Not Found.
-        abort(404, f"Post Id {post_id} does not exist.")
+        abort(HTTPStatus.NOT_FOUND, f"Post Id {post_id} does not exist.")
 
     if check_author and post["AuthorId"] != g.user["Id"]:
-        # 403: Forbidden.
-        abort(403)
+        abort(HTTPStatus.FORBIDDEN)
 
     return post
 
