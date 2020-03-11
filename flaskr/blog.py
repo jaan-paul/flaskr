@@ -49,7 +49,7 @@ def create():
 @blueprint.route("/<int:post_id>/update", methods=("GET", "POST"))
 @login_required
 def update(post_id: int):
-    post = _get_post(post_id)
+    post = _get_post_with_author_username(post_id)
 
     if request.method == "POST":
         title, body = request.form["title"], request.form["body"]
@@ -68,13 +68,13 @@ def update(post_id: int):
 @blueprint.route("/<int:post_id>/delete", methods=("POST",))
 @login_required
 def delete(post_id: int):
-    _get_post(post_id)
+    _get_post_with_author_username(post_id)
     get_db().posts.delete(post_id)
 
     return redirect(url_for("blog.index"))
 
 
-def _get_post(post_id: int, check_author: bool = True):
+def _get_post_with_author_username(post_id: int, check_author: bool = True):
     post = (
         get_db()
         .connection.execute(
